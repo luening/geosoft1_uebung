@@ -1,10 +1,12 @@
 
-
+// point
 const lat1 = point[0];
 const lon1 = point[1];
 
+// result
 const results = [];
 
+// calculation of the distance between point and each city
 for(let i = 0; i < cities.length; i++){
     const lat2 = cities[i][0];
     const lon2 = cities[i][1];
@@ -22,8 +24,10 @@ for(let i = 0; i < cities.length; i++){
     results.push(d);
 }
 
+//list sort 
 results.sort(function(a, b){return a - b});
 
+// return of the results
 for(let i = 0; i < results.length; i++){
     document.getElementById("resultlist"+i).innerHTML = results[i];
 }
