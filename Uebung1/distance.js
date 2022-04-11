@@ -22,6 +22,9 @@ for(let i = 0; i < cities.length; i++){
     results.push(d);
 }
 
-results.sort(function(a, b){return a - b})
+results.sort(function(a, b){return a - b});
 
-document.getElementById("resultlist").innerHTML = results;
+for(let i = 0; i < results.length; i++){
+    document.getElementById("resultlist"+i).innerHTML = results[i];
+}
+
