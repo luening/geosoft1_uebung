@@ -72,18 +72,24 @@ uploadfield.addEventListener('change', function(){
 document.getElementById("LocationButton").onclick = function() {myFunction()};
 
 function myFunction() {
-    console.log(1);
     var x = document.getElementById("demo");
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-        let point = [position.coords.longitude,position.coords.latitude];
-        console.log(point);
-        let distancePoints = distance(point, poi);
-        output(distancePoints);
+        navigator.geolocation.getCurrentPosition(showPosition);      
     } else { 
         x.innerHTML = "Geolocation is not supported by this browser.";
     }
     
 }
 
-//showPosition muss als Funktion deklariert werden
+function showPosition(position) {
+    let point = 
+    {
+    "type": "Point",
+    "coordinates": [position.coords.longitude,position.coords.latitude]
+    }
+    let distancePoints = distance(point, poi);
+    console.log(distancePoints);
+    output(distancePoints);
+  }
+
+  
