@@ -1,10 +1,10 @@
-
-
-
 //functions-------------------------------------------------------------
 
 /**
- * 
+ * calculate the distance between location and PoIs in Münster
+ * @param {geojson} location - Point from where the distance to the PoIs is being measured
+ * @param {geojson} poi - Point of Interests in Münster
+ * @returns {array} Distances between location and PoIs in metres
  */
 distance = (location, poi) =>
 {
@@ -27,13 +27,13 @@ distance = (location, poi) =>
         const d = R * c; // metres
         results.push(d);
     }
-    //list sort 
-    results.sort(function(a, b){return a - b});
+    results.sort(function(a, b){return a - b}); //list sort 
     return results;
 }
 
 /**
- * 
+ * Outputs the calculate distances in a list
+ * @param {array} a - array of distances
  */
 output = a => 
 {
@@ -44,9 +44,42 @@ output = a =>
     document.getElementById("resultlist").innerHTML = resultstring;
 }
 
+/**
+ * Locates position of the user
+ */
+function geolocationFunction() {
+    //uploadfield reset
+    let uploadfield = document.getElementById("uploadfield");
+    uploadfield.value = uploadfield.defaultValue;
+    //geolocation
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);      
+    } else { 
+        document.getElementById("resultlist").innerHTML = "Geolocation is not supported by this browser.";
+    }
+    
+}
+
+/**
+ * shows the results on the website
+ * @param {geojson} position 
+ */
+function showPosition(position) {
+    //convert position to an useable geojson schema 
+    let point = 
+    {
+    "type": "Point",
+    "coordinates": [position.coords.longitude, position.coords.latitude]
+    }
+    //calcualte distances
+    let distancePoints = distance(point, poi);
+    output(distancePoints);
+}
+
 
 
 //execute--------------------------------------------------------------
+document.getElementById("title").innerHTML = "Geosoftware 1 Übung"
 let uploadfield = document.getElementById("uploadfield");
 
 uploadfield.addEventListener('change', function(){
@@ -69,27 +102,9 @@ uploadfield.addEventListener('change', function(){
 
 })
 
-document.getElementById("LocationButton").onclick = function() {myFunction()};
+// execute geolocationFunction if button is clicked
+document.getElementById("LocationButton").onclick = function() {geolocationFunction()};
 
-function myFunction() {
-    var x = document.getElementById("demo");
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);      
-    } else { 
-        x.innerHTML = "Geolocation is not supported by this browser.";
-    }
-    
-}
 
-function showPosition(position) {
-    let point = 
-    {
-    "type": "Point",
-    "coordinates": [position.coords.longitude,position.coords.latitude]
-    }
-    let distancePoints = distance(point, poi);
-    console.log(distancePoints);
-    output(distancePoints);
-  }
 
   
