@@ -26,9 +26,7 @@
  
          const d = R * c; // metres
          results.push([d,poi.features[i].properties.name]);
-         console.log(poi.features[i].properties.name);
      }
-     console.log(results);
      results.sort(function(a, b){return a[0] - b[0]}); //list sort 
      return results;
  }
@@ -73,7 +71,14 @@ function showPosition(position) {
  }
  
  //execute-------------------------------------------------------------------
- document.getElementById("title").innerHTML = "Geosoftware 1 Übung"
+ //tags
+ const title = document.createElement("title");
+ title.innerHTML = "Geosoftware 1 Übung";
+ document.head.appendChild(title);
+
+ const author = document.createElement("author");
+ author.innerHTML = "Hendrik Lüning";
+ document.head.appendChild(author);
  
 
 // CalculateButton
