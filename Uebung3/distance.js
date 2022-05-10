@@ -111,13 +111,12 @@ function departures(a){
     xhttp1.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             let res = JSON.parse(this.responseText);
-            console.log(res);
             if(res == ""){
                 document.getElementById("departures").innerHTML = "Kein Bus in den nächsten 5 Minuten.";  
             }else{
                 var resultstring = "";
                 for(let i = 0;i<res.length;i++){
-                    resultstring += "<li>Linie: " + res[i].linienid + " Richtung: " + res[i].richtungstext + " Ankunftszeit: " + res[i].abfahrtszeit + "</li>";
+                    resultstring += "<li>Linie: " + res[i].linienid + ", Richtung: " + res[i].richtungstext + ", Ankunftszeit: " + res[i].abfahrtszeit + "</li>";
                 }
                 document.getElementById("departures").innerHTML = resultstring; ;
             }
@@ -164,7 +163,6 @@ calculateB.addEventListener("click", function () {
                 let res = JSON.parse(this.responseText);
                 const BusstationArray = generateBusstations(res.features);
                 const distances = distance(point, BusstationArray);
-                console.log(distances[0][2])
                 departures(distances[0][2]);
                 output(distances);
                 
