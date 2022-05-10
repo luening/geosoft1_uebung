@@ -90,9 +90,9 @@ class Busstation {
 }
 
 /**
- * 
- * @param {*} res 
- * @returns 
+ * Generates busstation-objects from @class busstations out of busstations (JSON).
+ * @param {*} res - busstations in Münster (JSON)
+ * @returns - Array mit Busstations-Objekte
  */
 function generateBusstations(res){
     const bussta = new Array(res.length);
@@ -102,23 +102,31 @@ function generateBusstations(res){
     return bussta;
 }
 
+/**
+ * Gets departures within 5 minutes from the nearest busstation.
+ * @param {*} a - id of the nearest busstation
+ */
 function departures(a){
-    let xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
+    let xhttp1 = new XMLHttpRequest();
+    xhttp1.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             let res = JSON.parse(this.responseText);
-            const resultstring = "";
-            for(let i;i=res.length;i++){
-                resultstring += "<li>Linie: " + res[i].lininenid + " Richtung: " + res[i].richtungstext + " Ankunftszeit: " + res[i].abfahrtszeit + "</li>";
+            console.log(res);
+            if(res == ""){
+                document.getElementById("departures").innerHTML = "Kein Bus in den nächsten 5 Minuten.";  
+            }else{
+                var resultstring = "";
+                for(let i = 0;i<res.length;i++){
+                    resultstring += "<li>Linie: " + res[i].linienid + " Richtung: " + res[i].richtungstext + " Ankunftszeit: " + res[i].abfahrtszeit + "</li>";
+                }
+                document.getElementById("departures").innerHTML = resultstring; ;
             }
-            console.log(resultstring);
-            document.getElementById("departures").innerHTML = resultstring;
         }
     }
-    let url = "https://rest.busradar.conterra.de/prod/haltestellen/"+a+"/abfahrten?sekunden=300"
-    xhttp.open("GET", url, true);
-    xhttp.send();
+    xhttp1.open("GET", "https://rest.busradar.conterra.de/prod/haltestellen/"+a+"/abfahrten?sekunden=300", true);
+    xhttp1.send();
 }
+
 
 
 
@@ -156,8 +164,10 @@ calculateB.addEventListener("click", function () {
                 let res = JSON.parse(this.responseText);
                 const BusstationArray = generateBusstations(res.features);
                 const distances = distance(point, BusstationArray);
-                output(distances);
+                console.log(distances[0][2])
                 departures(distances[0][2]);
+                output(distances);
+                
             }
         }
         xhttp.open("GET", "https://rest.busradar.conterra.de/prod/haltestellen", true);
