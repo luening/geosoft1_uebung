@@ -1,9 +1,65 @@
-//functions-------------------------------------------------------------
+//classes-------------------------------------------------------------
+
+/**
+ * Creates new Busstations
+ * @class
+ */
+ class Busstation {
+    /**
+     * 
+     * @param {*} id - explicit id for every busstation
+     * @param {*} bez - name of busstation
+     * @param {*} longitude - longitude coordinate
+     * @param {*} latitude - latitude coordinate
+     */
+    constructor(id, bez, longitude, latitude) {
+        this.id = id;
+        this.bez = bez;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+}
+
+
+
+
+//functions----------------------------------------------------------------------------------------------------------
+//---------load-data--------------------------------------------------------------------------------------------------
+
+/**
+ * determines the coordinates of the user
+ */
+ function geolocationFunction() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        document.getElementById("resultlist").innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+/**
+ * shows the results on the website
+ * @param {geojson} position 
+ */
+function showPosition(position) {
+    //convert position to an useable geojson schema 
+    let point =
+    {
+        "type": "Point",
+        "coordinates": [position.coords.longitude, position.coords.latitude]
+    }
+    let pointString = JSON.stringify(point)
+    document.getElementById("textfield").value = pointString;
+}
+
+
+
+//---------process-data------------------------------------------------------------------------------------------------
 
 /**
  * calculate the distance between location and PoIs in Münster
  * @param {geojson} location - Point from where the distance to the PoIs is being measured
- * @param {geojson} poi - Point of Interests in Münster
+ * @param {geojson} busstations - Busstation objects
  * @returns {array} Distances between location and PoIs in metres
  */
 distance = (location, busstations) => {
@@ -32,6 +88,38 @@ distance = (location, busstations) => {
 }
 
 /**
+ * Generates busstation-objects from @class busstations out of busstations (JSON).
+ * @param {*} res - busstations in Münster (JSON)
+ * @returns - Array mit Busstations-Objekte
+ */
+ function generateBusstations(res){
+    const bussta = new Array(res.length);
+    for(let p=0;p<res.length;p++){
+        bussta[p] = new Busstation(res[p].properties.nr,res[p].properties.lbez,res[p].geometry.coordinates[0],res[p].geometry.coordinates[1]);
+    }
+    return bussta;
+}
+
+/**
+ * Converts unix timestamp to HH:MM:SS format
+ * @param {*} unixTime 
+ * @returns 
+ */
+function convertUnix(unixTime) {
+    var date = new Date(unixTime * 1000);
+    var hours = date.getHours();
+    var minutes = "0" + date.getMinutes();
+    var seconds = "0" + date.getSeconds();
+
+    var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+
+    return formattedTime;
+}
+
+
+//---------output-data--------------------------------------------------------------------------------------------------
+
+/**
  * Outputs the calculate distances in a list
  * @param {array} a - array of distances
  */
@@ -44,69 +132,10 @@ output = a => {
 }
 
 /**
- * determines the coordinates of the user
- */
-function geolocationFunction() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-        document.getElementById("resultlist").innerHTML = "Geolocation is not supported by this browser.";
-    }
-}
-
-/**
- * shows the results on the website
- * @param {geojson} position 
- */
-function showPosition(position) {
-    //convert position to an useable geojson schema 
-    let point =
-    {
-        "type": "Point",
-        "coordinates": [position.coords.longitude, position.coords.latitude]
-    }
-    let pointString = JSON.stringify(point)
-    document.getElementById("textfield").value = pointString;
-}
-
-/**
- * Creates new Busstations
- * @class
- */
-class Busstation {
-    /**
-     * 
-     * @param {*} id - explicit id for every busstation
-     * @param {*} bez - name of busstation
-     * @param {*} longitude - longitude coordinate
-     * @param {*} latitude - latitude coordinate
-     */
-    constructor(id, bez, longitude, latitude) {
-        this.id = id;
-        this.bez = bez;
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }
-}
-
-/**
- * Generates busstation-objects from @class busstations out of busstations (JSON).
- * @param {*} res - busstations in Münster (JSON)
- * @returns - Array mit Busstations-Objekte
- */
-function generateBusstations(res){
-    const bussta = new Array(res.length);
-    for(let p=0;p<res.length;p++){
-        bussta[p] = new Busstation(res[p].properties.nr,res[p].properties.lbez,res[p].geometry.coordinates[0],res[p].geometry.coordinates[1]);
-    }
-    return bussta;
-}
-
-/**
  * Gets departures within 5 minutes from the nearest busstation.
  * @param {*} a - id of the nearest busstation
  */
-function departures(a){
+ function departures(a){
     let xhttp1 = new XMLHttpRequest();
     xhttp1.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -116,7 +145,7 @@ function departures(a){
             }else{
                 var resultstring = "";
                 for(let i = 0;i<res.length;i++){
-                    resultstring += "<li>Linie: " + res[i].linienid + ", Richtung: " + res[i].richtungstext + ", Ankunftszeit: " + res[i].abfahrtszeit + "</li>";
+                    resultstring += "<li>Linie: " + res[i].linienid + ", Richtung: " + res[i].richtungstext + ", Ankunftszeit: " + convertUnix(res[i].abfahrtszeit) + "</li>";
                 }
                 document.getElementById("departures").innerHTML = resultstring; ;
             }
@@ -130,7 +159,7 @@ function departures(a){
 
 
 
-//execute-------------------------------------------------------------------
+//execute-------------------------------------------------------------------------------------------------------------
 //tags
 const title = document.createElement("title");
 title.innerHTML = "Geosoftware 1 Übung";
