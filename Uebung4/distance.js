@@ -27,7 +27,9 @@ class Busstation {
 
 }
 
+//global Attributes
 
+var busstationArray = new Array();
 
 
 //functions----------------------------------------------------------------------------------------------------------
@@ -85,21 +87,27 @@ function generateBusstations(res) {
     }
 }
 
-
-function busstationsInPolygon(polygon){
-    //var turfPolygon = turf.polygon([polygon.features[0].geometry.coordinates]);
-    var testPolygon = turf.polygon([[[7.617, 51.966],[7.632307, 51.967841],[7.634003, 51.958659],[7.617522, 51.958335],[7.617, 51.966]]]);
-    //console.log(turfPolygon);
-    console.log(testPolygon);
-    busstationArray.forEach(element => {
-        console.log(turf.booleanPointInPolygon([element.longitude, element.latitude], testPolygon));
-        if(turf.booleanPointInPolygon([element.longitude, element.latitude], testPolygon) = true){
+/**
+ * checks if busstations are in the polygon
+ * if yes, set the visibility to true, otherwise to false
+ * if no polygon is handed over, set all to true
+ * @param {*} polygon 
+ */
+function busstationsInPolygon(polygon) {
+    if (polygon != null) {
+        var turfPolygon = turf.polygon(polygon.features[0].geometry.coordinates);
+        busstationArray.forEach(element => {
+            if (turf.booleanPointInPolygon([element.longitude, element.latitude], turfPolygon)) {
+                element.visible = true;
+            } else {
+                element.visible = false;
+            }
+        })
+    }else{
+        busstationArray.forEach(element => {
             element.visible = true;
-        }else{
-            element.visible = false;
-        }
-    })
-
+        })
+    }
 }
 
 //---------output-data--------------------------------------------------------------------------------------------------
@@ -130,10 +138,10 @@ function showPosition(position) {
  */
 function markBusstations() {
     busstationArray.forEach(element => {
-        if(element.visible == true){
+        if (element.visible == true) {
             element.marker = L.marker([element.latitude, element.longitude]).addTo(map);
-            element.marker.bindPopup(element.bez + "<br>" + element.distance + "<br>" + element.visible);
-        }else{
+            element.marker.bindPopup(element.bez + " ist<br>" + element.distance + " m entfernt.");
+        } else {
             map.removeLayer(element.marker)
         }
     });
@@ -153,9 +161,7 @@ const author = document.createElement("author");
 author.innerHTML = "Hendrik Lüning";
 document.head.appendChild(author);
 
-//global Attributes
 
-var busstationArray = new Array();
 
 // Leaflet
 var map = L.map('map').setView([51.96, 7.62], 13);
@@ -174,10 +180,11 @@ var drawControlEditTrue = new L.Control.Draw({
         polyline: false,
         rectangle: false,
         circle: false,
+        circlemarker: false,
         marker: false
     },
     edit: {
-        edit: true,
+        edit: false,
         remove: true,
         featureGroup: drawnItems
     }
@@ -187,7 +194,7 @@ map.addControl(drawControlEditTrue);
 var drawControlEditFalse = new L.Control.Draw({
     draw: false,
     edit: {
-        edit: true,
+        edit: false,
         remove: true,
         featureGroup: drawnItems
     }
@@ -200,23 +207,17 @@ map.on(L.Draw.Event.CREATED, function (e) {
     var draws = drawnItems.toGeoJSON();
     map.removeControl(drawControlEditTrue);
     map.addControl(drawControlEditFalse);
-    console.log(draws);
     busstationsInPolygon(draws);
     markBusstations();
 })
 
-map.on('draw:edited', function (e) {
-    var layers = e.layers;
-    layers.eachLayer(function (layer) {
-        map.addLayer(layer)
-    });
-    busstationsInPolygon(draws);
-    markBusstations();
-});
 
 map.on('draw:deleted', function (e) {
     map.removeControl(drawControlEditFalse);
     map.addControl(drawControlEditTrue);
+    var layer = e.layer;
+    busstationsInPolygon(layer);
+    markBusstations();
 });
 
 // LocationButton
