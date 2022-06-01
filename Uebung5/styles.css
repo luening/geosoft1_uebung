@@ -8,8 +8,6 @@
 @media (min-width: 992px) {
     #map{
         width: 50%;
-        height: 700px;
-        margin: 0px auto;
-        text-align: left;     
+        height: 600px;    
     }
 }
