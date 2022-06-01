@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=chrome">
+        <mera name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Geosoftware 1 Übungen">
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+        <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+        <script defer src="busstations.js"></script>
+
+        <link rel="stylesheet" href="styles.css">
+
+    </head>
+    <body>
+        
+        <h1>Geosoftware1 Übung - Hendrik Lüning</h1>
+        <h2>Übung 5</h2>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navigation</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="index.html">Distanzberechnung</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active" href="#">Bushaltestellen</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+
+        <p>Hier können Sie die Entfernung zu ihren umliegenden Bushaltestellen anzeigen lassen. Dafür fragen Sie ihren Standort ab, berechnen die Entfernung und schon können Sie auf der Karte die Entfernungen betrachten.<br> Mit dem Polygonwerkzeug links oben in der Karte, können Sie eine Begrenzung einzeichnen, in der dann Bushaltestellen ihres Interesses angezeigt werden.</p>
+        <p id="LocationButton"><b>Standort abfragen.</b> Hier klicken.</p>
+        <p id="BusstationButton"><b>Berechnung der Entfernung zu Bushaltestellen.</b> Hier klicken.</p>
+        <p>Hier können Sie einen Standort im GeoJSON-Format hochladen oder ihren aktuellen Standort per Knopfdruck abfragen.</p>
+        <textarea id="textfield" cols="100" rows="4"></textarea>
+
+        <div id="map"></div>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light"></nav>
+          <div class="footer">
+            <small class="text-muted">
+              <a class="nav-link" href="impressum.html">Impressum</a>
+            </small>
+          </div>
+        </nav>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+
+    </body>
+</html>
