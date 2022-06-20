@@ -1,4 +1,4 @@
-let poi = {
+{
 "type": "FeatureCollection",
 "features": [
 {
